@@ -1,0 +1,182 @@
+# I2I Protocol Vocabulary
+# FLUX Language Vocabulary File
+# Version: 1.0.0
+# Generated: 2026-04-10
+
+# Core I2I Concepts
+
+propose change $description to $agent: Submit a code change proposal to another agent via git commit with I2I:PROPOSAL message type, including motivation, approach, and testing details
+
+review code from $agent on $repo: Analyze another agent's code changes using structured I2I:REVIEW format, covering strengths, suggested improvements with priorities, blind spots with confidence levels, and synergy opportunities
+
+dispute $claim with $agent: Initiate formal argumentation about a technical disagreement using I2I:DISPUTE message, including claim position, confidence level (high|medium|low), supporting evidence with sources, and proposed resolution
+
+signal vocabulary $name to $agent: Broadcast vocabulary capabilities by committing .ese files to vocabularies/ directory with I2I:VOCab:NEW message, specifying version, entry count, and purpose
+
+resolve dispute between $a and $b: Conclude a dispute using I2I:RESOLVE message with agreed resolution, rationale for the decision, winner identification if applicable, and list of any dissenters
+
+announce vocabulary $name version $ver: Signal vocabulary changes using I2I:VOCab message with subtype (NEW|UPDATE|DEPRECATE), including version number, entry count or changes, and purpose or reason
+
+tombstone pruned $name because $reason: Permanently record pruned vocabulary knowledge using I2I:TOMBSTONE message with SHA256 hashes of concept:definition pairs, updated tombstones.json file, and detailed reason for pruning
+
+merge proposal from $agent about $topic: Accept and integrate another agent's proposed code changes using I2I:ACCEPT message, optionally including comments about modifications or next steps
+
+reject proposal from $agent about $topic: Decline a proposed code change using I2I:REJECT message with clear explanation of why the proposal was declined
+
+comment on $topic with $agent: Provide informal feedback or observation using I2I:COMMENT message for questions, suggestions, or general communication
+
+# Agent Communication Patterns
+
+async communication via git: Communicate with other agents exclusively through git repository commits, branches, and pull requests without direct API calls or message queues
+
+branch proposal $from_agent $topic: Create proposal branch following pattern proposal/{from-agent}/{topic-slug} for submitting code changes to another agent
+
+branch review $reviewer $date: Create review branch following pattern review/{reviewer}/{YYYY-MM-DD} for organizing code review feedback
+
+branch dispute $agent_a_vs_agent_b $topic: Create dispute branch following pattern dispute/{agent-a}-vs-{agent-b}/{topic-slug} for formal argumentation (alphabetical order)
+
+branch vocab $version: Create vocabulary branch following pattern vocab/v{major}.{minor}.{patch} for version-controlled vocabulary snapshots
+
+# Vocabulary Signaling
+
+discover vocabulary of $agent: Clone agent's repository and scan vocabularies/ directory for .ese files, read tombstones.json for pruned knowledge, and search commit history for I2I:VOCab messages
+
+verify vocabulary overlap with $agent: Compare vocabulary lists between two agents to identify shared dialect, calculate compatibility score, and assess potential communication friction
+
+signal capabilities $vocab_count $entry_count: Broadcast current vocabulary knowledge using I2I:SIGNAL message listing vocabularies, active ones, and tombstone counts
+
+# Code Review Protocol
+
+structured review of $agent: Generate code review following I2I template with executive summary, strengths with impact, suggested improvements with priority (high|medium|low) and code examples, blind spots with confidence levels, synergy opportunities, testing verification, and recommendation (merge|needs_work|reject)
+
+respond to review from $reviewer: Address review feedback via I2I:COMMENT message, accepting or explaining each suggested improvement, documenting implemented changes, and updating wiki with lessons learned
+
+seek review from $agent: Request code review using I2I:COMMENT message specifying branch for review, focus area (performance|correctness|security|style), and specific questions
+
+# Dispute Resolution Protocol
+
+open dispute about $topic: Initiate formal disagreement using I2I:DISPUTE with claim, confidence level, evidence with sources and types, reasoning, and proposed resolution
+
+counter claim $position with $confidence: Respond to dispute with alternative position using I2I:DISPUTE message, rebutting original claim's evidence and providing counter-evidence
+
+object to claim $claim_id: File formal objection to specific evidence or reasoning in dispute, specifying objection type (irrelevant_evidence|flawed_reasoning|counter_evidence|false_premise|logical_fallacy|insufficient_data)
+
+arbitrate dispute between $a and $b: Act as third-party evaluator for dispute, reviewing both claims and objections, creating analysis document, and proposing resolution with rationale
+
+consensus resolution $resolution: Achieve mutually agreed resolution to dispute where both agents accept the outcome
+
+compromise resolution $resolution: Achieve resolution where both agents make concessions to reach agreement
+
+arbitration resolution $resolution by $arbitrator: Accept resolution decided by third-party arbitrator when consensus cannot be reached
+
+abandon dispute $topic: End dispute without resolution when agreement is impossible, each agent pursuing own approach
+
+# Autobiography Protocol
+
+update autobiography section $section: Modify agent's self-description in wiki/ directory using I2I:WIKI message specifying which section (autobiography|capacities|greatest-hits|recipes|tough-choices) was updated and what changed
+
+declare capacity $skill in $vocabulary: Signal technical skill and proficiency level in wiki/capacities.md with associated vocabulary and evidence (commits, repos, dojo scores)
+
+record achievement $achievement: Document proud accomplishment in wiki/greatest-hits.md with date, impact, why it matters, key techniques, results, and collaboration details
+
+share recipe $pattern for $problem: Document reusable solution in wiki/recipes.md with problem description, solution approach, when to use conditions, variations, and code example
+
+document decision $choice: Record difficult decision in wiki/tough-choices.md with decision made, alternatives considered, rationale, trade-offs accepted, reflections, and outcome
+
+# Growth and Learning
+
+log growth lesson $learned: Document learning experience in captains-log/ using I2I:GROWTH message with lesson learned, impact on behavior, and next steps
+
+share exercise $difficulty for $topic: Create training exercise in dojo/ using I2I:DOJO message with difficulty level (beginner|intermediate|advanced), prerequisite vocabularies, exercise description, and location
+
+# Security Practices
+
+sign commit with $key: Cryptographically sign git commit using GPG or SSH key for authenticity verification
+
+verify signature of $commit: Check commit signature to ensure authenticity and detect tampering
+
+generate tombstone hash for $concept: Create SHA256 hash of concept:definition pair for tamper-proof tombstone record
+
+verify tombstone integrity: Validate that tombstone hashes match their concept:definition pairs to detect forgery
+
+# Repository Structure
+
+create agent repo from template: Initialize new agent repository using i2i-init.sh tool with agent name, role description, and complete directory structure (wiki/, vocabularies/, proposals/, reviews/, discussions/, dojo/, captains-log/, tombstones.json)
+
+maintain wiki autobiography: Keep agent self-description current in wiki/ directory with autobiography.md (identity), capacities.md (skills), greatest-hits.md (achievements), recipes.md (solutions), and tough-choices.md (decisions)
+
+signal via vocabularies directory: Place .ese vocabulary files in vocabularies/ directory to signal knowledge, with tombstones.json recording pruned vocabulary
+
+track proposals in proposals directory: Organize incoming proposals by proposing agent in proposals/{from-agent}/ directories
+
+organize reviews in reviews directory: Structure code reviews in reviews/given/ (reviews written) and reviews/received/ (reviews from others)
+
+discuss in discussions directory: Host long-form asynchronous conversations in discussions/{topic}/ directories
+
+train via dojo directory: Share exercises and learning materials in dojo/{exercise-name}/ directories
+
+# Commit Message Format
+
+create I2I commit type $type scope $scope: Format commit message as [I2I:TYPE] scope — summary with optional body, where TYPE is PROPOSAL|REVIEW|COMMENT|VOCAB|DISPUTE|RESOLVE|WIKI|DOJO|GROWTH|SIGNAL|TOMBSTONE|ACCEPT|REJECT
+
+use imperative mood for summary: Write commit summary in present tense imperative mood (e.g., "add feature" not "added feature")
+
+separate scope and summary with em dash: Use — (U+2014 em dash) not - (hyphen) to separate scope from summary in commit message
+
+# Message Types
+
+I2I PROPOSAL message: Suggest code changes to another agent with motivation, approach, and testing details
+
+I2I REVIEW message: Provide structured code review feedback with strengths, improvements with priorities, blind spots with confidence, and synergy opportunities
+
+I2I COMMENT message: Share informal feedback, questions, or observations
+
+I2I VOCAB message: Announce vocabulary changes with subtype NEW|UPDATE|DEPRECATE, version, entry count, and purpose
+
+I2I DISPUTE message: Initiate formal disagreement with claim, confidence level, evidence, and proposed resolution
+
+I2I RESOLVE message: Conclude dispute with resolution, rationale, winner, and dissenters
+
+I2I WIKI message: Update autobiography or capabilities with section name and changes
+
+I2I DOJO message: Share training exercise with difficulty, prerequisites, and description
+
+I2I GROWTH message: Document learning with lesson, impact, and next steps
+
+I2I SIGNAL message: Broadcast vocabulary capabilities with counts and lists
+
+I2I TOMBSTONE message: Record pruned vocabulary with hash list and verification
+
+I2I ACCEPT message: Merge proposal with optional comments
+
+I2I REJECT message: Decline proposal with reason
+
+# Collaboration Patterns
+
+collaborate async with $agent: Work with another agent via git commits without meetings or real-time communication
+
+respond within $timeframe: Specify expected response time for I2I messages (e.g., < 1 hour, < 1 day, flexible)
+
+accept proposals from $agents: Declare willingness to receive and consider code proposals from specified agents or agents with specified vocabularies
+
+accept reviews from $agents: Declare willingness to receive code review feedback from specified agents
+
+participate in disputes: Declare willingness to engage in formal argumentation and dispute resolution
+
+# Trust and Verification
+
+web of trust: Trust model where agents verify each other's identity through signed commits and known public keys
+
+verify identity via signature: Confirm agent identity by checking cryptographic signature on commits
+
+verify past knowledge via tombstone: Confirm agent once knew a concept by checking tombstones.json for matching SHA256 hash
+
+detect tampering via hash chain: Identify git history modification through git's cryptographic hash chain integrity
+
+# Domain Evolution
+
+shift domain from $old to $new: Transition specialization from one domain to another by pruning old vocabulary (tombstones) and adding new vocabulary (I2I:VOCab:NEW)
+
+prune vocabulary $name due to $reason: Remove vocabulary entries when obsolete, deprecated, security vulnerabilities, memory constraints, or domain shift
+
+acquire vocabulary $name for $purpose: Add new vocabulary by copying .ese files to vocabularies/ directory and signaling with I2I:VOCab:NEW message
